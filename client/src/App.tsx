@@ -1,8 +1,7 @@
 // https://demos.creative-tim.com/argon-dashboard-pro-material-ui/?_ga=2.245836685.802098311.1691521800-628925500.1691521800#/authentication/sign-in/basic
 
-import React from "react";
 import "./App.css";
-import SignUp from "./components/layouts/authentication/sign-up/SignUp";
+import Routes from "./routes";
 
 function App() {
   return (
@@ -17,7 +16,7 @@ function App() {
         alignItems: "center",
       }}
     >
-      <SignUp />
+      <Routes />
     </div>
   );
 }

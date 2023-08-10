@@ -1,4 +1,4 @@
-import { Link } from "@mui/icons-material";
+import { Link } from "react-router-dom";
 import Card from "@mui/material/Card";
 import Checkbox from "@mui/material/Checkbox";
 import { Box, Button, Grid, TextField, Typography } from "@mui/material";
@@ -10,15 +10,26 @@ import Separator from "../../../separator/Separator";
 const StyledTextField = styled(TextField)`
   & .MuiFormLabel-root {
     color: #01e95e;
+    top: -10px;
+    font-size: 15px;
   }
+
   & .MuiInputLabel-root {
     color: #01e95e !important;
+  }
+
+  & .css-1jy569b-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
+    top: 0;
   }
 
   & .MuiInputBase-root {
     color: #080518;
     width: 399px;
     height: 40px;
+  }
+
+  & .MuiInputBase-input {
+    padding: 0;
   }
 
   & .MuiOutlinedInput-notchedOutline {
@@ -48,7 +59,7 @@ function SignUp() {
               Register with
             </Typography>
           </Box>
-          <Box mb={2}>
+          <Box mb={3}>
             <Socials />
           </Box>
           <Box px={12} sx={{ padding: "0 96px" }}>
@@ -76,7 +87,6 @@ function SignUp() {
                 }}
               >
                 <StyledTextField
-                  fullWidth
                   component="div"
                   id="name"
                   name="name"
@@ -90,7 +100,6 @@ function SignUp() {
                 />
 
                 <StyledTextField
-                  fullWidth
                   component="div"
                   id="email"
                   name="email"
@@ -104,7 +113,6 @@ function SignUp() {
                 />
 
                 <StyledTextField
-                  fullWidth
                   component="div"
                   id="password"
                   name="password"
@@ -117,8 +125,18 @@ function SignUp() {
                   // onChange={getPassword}
                 />
               </Box>
-              <Box maxWidth="399px" display="flex" alignItems="center">
-                <Checkbox defaultChecked />
+
+              <Box maxWidth="399px" display="flex" alignItems="center" ml={2}>
+                <Checkbox
+                  defaultChecked
+                  sx={{
+                    color: "#01e95e",
+                    padding: "0",
+                    "&.MuiButtonBase-root": {
+                      color: "#01e95e",
+                    },
+                  }}
+                />
                 <Typography
                   variant="button"
                   color="#01e95e"
@@ -141,6 +159,7 @@ function SignUp() {
                 mt={4}
                 mb={1}
                 sx={{
+                  minWidth: "399px",
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
@@ -161,22 +180,25 @@ function SignUp() {
                   sign up
                 </Button>
               </Box>
-              <Box mt={2} maxWidth="399px">
+              <Box mt={2} ml={2} maxWidth="399px">
                 <Typography
                   variant="button"
                   color="#01e95e"
                   fontWeight="regular"
                 >
                   Already have an account?&nbsp;
-                  <Typography
-                    component={Link}
+                  <Link
                     to="/authentication/sign-in"
-                    variant="button"
-                    color="dark"
-                    fontWeight="bold"
+                    style={{ textDecoration: "none" }}
                   >
-                    Sign in
-                  </Typography>
+                    <Typography
+                      component="span"
+                      color="#01e95e"
+                      fontWeight="bold"
+                    >
+                      Sign in
+                    </Typography>
+                  </Link>
                 </Typography>
               </Box>
             </Box>

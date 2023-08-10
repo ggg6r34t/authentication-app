@@ -3,7 +3,7 @@ import { Box, Divider, Typography } from "@mui/material";
 function Separator() {
   return (
     <Box position="relative" py={0.25}>
-      <Divider />
+      <Divider sx={{ backgroundColor: "#01e95e" }} />
       <Box
         px={1.5}
         lineHeight={1}
