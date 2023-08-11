@@ -1,24 +1,25 @@
 import { Link } from "react-router-dom";
 import Card from "@mui/material/Card";
 import Checkbox from "@mui/material/Checkbox";
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 
 import Socials from "../../../socials/Socials";
 import Separator from "../../../separator/Separator";
 import {
   StyledTextField,
-  // Container,
+  Container,
   // CardContainer,
   // CenteredBox,
-  // FormContainer,
-  // CheckboxLabel,
-  // SignUpButton,
+  CheckboxContainer,
+  FormContainer,
+  SignUpButton,
   // SignInLink,
+  StyledButtonContainer,
 } from "./signupStyles";
 
 function SignUp() {
   return (
-    <Box sx={{ margin: "0 auto" }}>
+    <Container>
       <Grid
         container
         display="flex"
@@ -44,14 +45,7 @@ function SignUp() {
                 padding: "16px 24px 24px",
               }}
             >
-              <Box
-                component="form"
-                role="form"
-                sx={{
-                  width: "428px",
-                  height: "344px",
-                }}
-              >
+              <FormContainer component="form" role="form">
                 <Box
                   sx={{
                     display: "flex",
@@ -99,12 +93,12 @@ function SignUp() {
                   />
                 </Box>
 
-                <Box
-                  maxWidth="399px"
-                  display="flex"
-                  alignItems="center"
-                  ml={2}
-                  mb={6}
+                <CheckboxContainer
+                // maxWidth="399px"
+                // display="flex"
+                // alignItems="center"
+                // ml={2}
+                // mb={6}
                 >
                   <Checkbox
                     defaultChecked
@@ -133,32 +127,10 @@ function SignUp() {
                   >
                     Terms and Conditions
                   </Typography>
-                </Box>
-                <Box
-                  mt={4}
-                  mb={1}
-                  sx={{
-                    minWidth: "399px",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
-                  <Button
-                    fullWidth
-                    sx={{
-                      width: "399px",
-                      color: "#080518",
-                      backgroundColor: "#01e95e",
-
-                      "&:hover": {
-                        backgroundColor: "#01e95e",
-                      },
-                    }}
-                  >
-                    sign up
-                  </Button>
-                </Box>
+                </CheckboxContainer>
+                <StyledButtonContainer>
+                  <SignUpButton>sign up</SignUpButton>
+                </StyledButtonContainer>
                 <Box mt={2} ml={2} maxWidth="399px">
                   <Typography
                     variant="button"
@@ -180,12 +152,12 @@ function SignUp() {
                     </Link>
                   </Typography>
                 </Box>
-              </Box>
+              </FormContainer>
             </Box>
           </Box>
         </Card>
       </Grid>
-    </Box>
+    </Container>
   );
 }
 
