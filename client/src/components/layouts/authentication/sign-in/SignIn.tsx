@@ -176,7 +176,7 @@ function SignIn() {
                   <Button
                     fullWidth
                     component={Link}
-                    to="/"
+                    to="/authentication/sign-up"
                     sx={{
                       width: "399px",
                       color: "#080518",

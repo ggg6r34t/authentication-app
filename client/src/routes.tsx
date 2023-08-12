@@ -6,8 +6,9 @@ import SignUp from "./components/layouts/authentication/sign-up/SignUp";
 function routes() {
   return (
     <Routes>
-      <Route path="/" element={<SignUp />} />
       <Route path="/authentication/sign-in" element={<SignIn />} />
+      <Route path="/authentication/sign-up" element={<SignUp />} />
+      <Route path="*" element={<SignIn />} />
     </Routes>
   );
 }
