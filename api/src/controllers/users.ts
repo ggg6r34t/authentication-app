@@ -3,13 +3,17 @@ import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
-import User from "../models/User";
+import User, { UserDocument } from "../models/User";
 import {
   createUserService,
   findUserByEmailService,
   updateUserInfoByIdService,
 } from "../services/users";
-import { UnauthorizedError } from "../helpers/apiError";
+import {
+  BadRequestError,
+  NotFoundError,
+  UnauthorizedError,
+} from "../helpers/apiError";
 
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET as string;
@@ -20,27 +24,32 @@ export const createUser = async (
   next: NextFunction
 ) => {
   // destructing request.body
-  const { firstName, lastName, email, password } = req.body;
+  const { name, email, password } = req.body;
 
   try {
     // hashed password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await generateHashedPassword(password);
 
     const newUser = new User({
-      firstName,
-      lastName,
+      name,
       email,
       password: hashedPassword,
     });
 
     // response to frontend
     const createdUser = await createUserService(newUser);
-    res.status(200).json({ message: `Account ${createdUser} created.` });
+    res
+      .status(201)
+      .json({ message: `Account for ${createdUser.email} created.` });
   } catch (error) {
     next(error);
   }
 };
+
+async function generateHashedPassword(password: string): Promise<string> {
+  const salt = await bcrypt.genSalt(10);
+  return bcrypt.hash(password, salt);
+}
 
 export const userLogin = async (
   req: Request,
@@ -56,7 +65,7 @@ export const userLogin = async (
   try {
     const userData = await findUserByEmailService(email);
     if (!userData) {
-      res.status(403).json({ message: "Can't find user with that email." });
+      res.status(403).json({ message: "User not found." });
       return;
     }
 
@@ -65,31 +74,35 @@ export const userLogin = async (
 
     // verify that password and hashedPassword are valid
     if (!password || !hashedPassword) {
-      throw new UnauthorizedError();
+      throw new UnauthorizedError("Invalid credentials");
     }
 
     const isCorrectPassword = await bcrypt.compare(password, hashedPassword);
 
     if (!isCorrectPassword) {
-      throw new UnauthorizedError();
+      throw new UnauthorizedError("Invalid credentials");
     }
 
-    // token-based authentication
-    const token = jwt.sign(
-      {
-        email: userData.email,
-        _id: userData._id,
-      },
-      JWT_SECRET,
-      {
-        expiresIn: "1h",
-      }
-    );
+    const token = generateJwtToken(userData);
     res.json({ userData, token, isCorrectPassword });
   } catch (error) {
     next(error);
   }
 };
+
+function generateJwtToken(userData: UserDocument): string {
+  return jwt.sign(
+    // token-based authentication
+    {
+      email: userData.email,
+      _id: userData._id,
+    },
+    JWT_SECRET,
+    {
+      expiresIn: "1h",
+    }
+  );
+}
 
 export const updateUserInfo = async (
   req: Request,
@@ -98,11 +111,22 @@ export const updateUserInfo = async (
 ) => {
   try {
     const userId = req.params.id;
-    const user = req.body.user;
     const update = req.body;
 
-    // if user updates password, check that the password is different fro the one in the db
-    // and if its different we need to add the new password and ensure that the new password is hashed.
+    const currentUser = await findUserByEmailService(userId);
+    if (!currentUser) {
+      throw new NotFoundError(`User with ID ${userId} not found`);
+    }
+
+    if (update.password) {
+      const newPassword = update.password;
+      if (newPassword === currentUser.password) {
+        throw new BadRequestError(
+          "New password cannot be the same as the old one."
+        );
+      }
+      update.password = await generateHashedPassword(newPassword);
+    }
 
     const updatedUser = await updateUserInfoByIdService(userId, update);
     res.status(200).json(updatedUser);

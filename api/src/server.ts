@@ -12,7 +12,7 @@ const port = process.env.NODE_ENV === "production" ? process.env.PORT : 8000;
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  dbName: "ShoeStoreDB",
+  dbName: "UserDB",
 };
 
 mongoose.set("strictQuery", false);

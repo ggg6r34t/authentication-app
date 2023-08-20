@@ -1,4 +1,5 @@
-import { NotFoundError } from "../helpers/apiError";
+import { InternalServerError, NotFoundError } from "../helpers/apiError";
+
 import User, { UserDocument } from "../models/User";
 
 export const createUserService = async (
@@ -7,7 +8,10 @@ export const createUserService = async (
   try {
     return await newUser.save();
   } catch (error) {
-    throw error;
+    console.error("Error creating account:", error);
+    throw new InternalServerError(
+      "An error occured while creating the account."
+    );
   }
 };
 
@@ -22,13 +26,14 @@ export const findUserByEmailService = async (
 
     const foundUser = await User.findOne({ email: userEmail });
     if (!foundUser) {
-      throw new NotFoundError(
-        `Cannot find any user with the email ${userEmail}.`
-      );
+      throw new NotFoundError(`User not found with the email ${userEmail}.`);
     }
     return foundUser;
   } catch (error) {
-    throw error;
+    console.error("Error finding user by email:", error);
+    throw new InternalServerError(
+      "An error occured while searching for the user."
+    );
   }
 };
 
@@ -41,10 +46,13 @@ export const updateUserInfoByIdService = async (
   });
   try {
     if (!user) {
-      throw new NotFoundError(`User ${userId} not found`);
+      throw new NotFoundError(`User with the ID ${userId} not found`);
     }
     return user;
   } catch (error) {
-    throw error;
+    console.error("Error finding user:", error);
+    throw new InternalServerError(
+      "An error occured while searching for the user."
+    );
   }
 };
