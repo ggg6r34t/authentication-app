@@ -15,6 +15,16 @@ export const createUserService = async (
   }
 };
 
+export const getUserByIdservice = async (
+  userId: string
+): Promise<UserDocument | null> => {
+  const user = await User.findById({ userId: userId });
+  if (user === null) {
+    throw new NotFoundError(`User with the id ${userId} not found`);
+  }
+  return user;
+};
+
 export const findUserByEmailService = async (
   userEmail: string
 ): Promise<UserDocument> => {

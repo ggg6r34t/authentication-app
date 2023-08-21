@@ -1,9 +1,17 @@
 import { Router } from "express";
 import passport from "passport";
 
-import { createUser, updateUserInfo, userLogin } from "../controllers/users";
+import {
+  getUserById,
+  createUser,
+  updateUserInfo,
+  userLogin,
+} from "../controllers/users";
 
 const router = Router();
+
+// get user
+router.get("/:id", getUserById);
 
 // create account or register
 router.post("/register", createUser);

@@ -7,6 +7,7 @@ import User, { UserDocument } from "../models/User";
 import {
   createUserService,
   findUserByEmailService,
+  getUserByIdservice,
   updateUserInfoByIdService,
 } from "../services/users";
 import {
@@ -103,6 +104,29 @@ function generateJwtToken(userData: UserDocument): string {
     }
   );
 }
+
+export const getUserById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.params.id;
+    const user = await getUserByIdservice(userId);
+
+    if (!user) {
+      throw new NotFoundError(`User with ID ${userId} not found`);
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "User retrieved successfully",
+      data: user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const updateUserInfo = async (
   req: Request,
