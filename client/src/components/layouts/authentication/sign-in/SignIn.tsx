@@ -1,11 +1,16 @@
+import axios from "axios";
+import styled from "styled-components";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { Box, Button, Card, Grid, Switch, Typography } from "@mui/material";
 
-import Socials from "../../../socials/Socials";
 import { StyledTextField } from "../sign-up/signupStyles";
+import { userActions } from "../../../../redux/slices/user";
+import { User } from "../../../../type/types";
+import { BASE_URL } from "../../../../api/api";
+import Socials from "../../../socials/Socials";
 import Separator from "../../../separator/Separator";
-import styled from "styled-components";
 
 const StyledSwitch = styled(Switch)`
   & .MuiSwitch-thumb {
@@ -38,6 +43,66 @@ const StyledSwitch = styled(Switch)`
 function SignIn() {
   const [rememberMe, setRememberMe] = useState(false);
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
+
+  const [userInput, setUserInput] = useState({
+    email: "",
+    password: "",
+  });
+
+  const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+
+  // get user email from form
+  function getEmail(e: React.ChangeEvent<HTMLInputElement>) {
+    setUserInput({ ...userInput, email: e.target.value });
+  }
+
+  // get user password from form
+  function getPassword(e: React.ChangeEvent<HTMLInputElement>) {
+    setUserInput({ ...userInput, password: e.target.value });
+  }
+
+  function sendUserInformation() {
+    // send an AJAX request to the backend API endpoint
+    axios
+      .post(`${BASE_URL}/account/login`, userInput)
+      .then((res) => {
+        if (res.status === 200) {
+          // store the userData and userToken securely (e.g., in local storage or cookie)
+          const user = res.data.userData;
+          const userToken = res.data.token;
+
+          // save userData to redux
+          const userWithData: User = {
+            ...user,
+            token: userToken,
+          };
+          dispatch(userActions.setUserData(userWithData));
+
+          // set user login state
+          dispatch(userActions.userLogin(true));
+
+          // redirect to user account
+          navigate("/account");
+        }
+      })
+      .catch((err) => {
+        // handle login error
+        console.error(err);
+      });
+
+    // clear form
+    setUserInput({
+      email: "",
+      password: "",
+    });
+  }
+
+  const handleSumbit = (e: React.ChangeEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    sendUserInformation();
+  };
 
   return (
     <Box sx={{ margin: "0 auto" }}>
@@ -76,6 +141,9 @@ function SignIn() {
               <Box
                 component="form"
                 role="form"
+                noValidate
+                autoComplete="off"
+                onSubmit={handleSumbit}
                 sx={{
                   width: "428px",
                   height: "344px",
@@ -97,8 +165,8 @@ function SignIn() {
                     type="email"
                     variant="outlined"
                     required
-                    // value={userInput.email}
-                    // onChange={getEmail}
+                    value={userInput.email}
+                    onChange={getEmail}
                   />
 
                   <StyledTextField
@@ -110,8 +178,8 @@ function SignIn() {
                     type="password"
                     variant="outlined"
                     required
-                    // value={userInput.password}
-                    // onChange={getPassword}
+                    value={userInput.password}
+                    onChange={getPassword}
                   />
                 </Box>
                 <Box

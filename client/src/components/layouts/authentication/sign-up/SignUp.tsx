@@ -1,23 +1,80 @@
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Card from "@mui/material/Card";
 import Checkbox from "@mui/material/Checkbox";
 import { Box, Grid, Typography } from "@mui/material";
 
-import Socials from "../../../socials/Socials";
-import Separator from "../../../separator/Separator";
 import {
   StyledTextField,
   Container,
   // CardContainer,
   // CenteredBox,
   CheckboxContainer,
-  FormContainer,
   SignUpButton,
   // SignInLink,
   StyledButtonContainer,
 } from "./signupStyles";
+import Socials from "../../../socials/Socials";
+import Separator from "../../../separator/Separator";
+import { BASE_URL } from "../../../../api/api";
 
 function SignUp() {
+  const [userInput, setUserInput] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const navigate = useNavigate();
+
+  // get user first name from form
+  function getname(e: React.ChangeEvent<HTMLInputElement>) {
+    setUserInput({ ...userInput, name: e.target.value });
+  }
+
+  // get user email from form
+  function getEmail(e: React.ChangeEvent<HTMLInputElement>) {
+    setUserInput({ ...userInput, email: e.target.value });
+  }
+
+  // get user password from form
+  function getPassword(e: React.ChangeEvent<HTMLInputElement>) {
+    setUserInput({ ...userInput, password: e.target.value });
+  }
+
+  function sendUserInformation() {
+    // send an AJAX request to the backend API endpoint
+    axios
+      .post(`${BASE_URL}/account/register`, userInput)
+      .then((res) => {
+        // handle successful login
+        const token = res.data.token;
+
+        // store the toekn securely (e.g., in local storage or cookie)
+        localStorage.setItem("token", token);
+
+        // redirect to user account
+        navigate("/");
+      })
+      .catch((err) => {
+        // handle login error
+        console.error(err);
+      });
+
+    // clear form
+    setUserInput({
+      name: "",
+      email: "",
+      password: "",
+    });
+  }
+
+  const handleSumbit = (e: React.ChangeEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    sendUserInformation();
+  };
+
   return (
     <Container>
       <Grid
@@ -45,7 +102,17 @@ function SignUp() {
                 padding: "16px 24px 24px",
               }}
             >
-              <FormContainer component="form" role="form">
+              <Box
+                component="form"
+                role="form"
+                noValidate
+                autoComplete="off"
+                onSubmit={handleSumbit}
+                sx={{
+                  width: "428px",
+                  height: "344px",
+                }}
+              >
                 <Box
                   sx={{
                     display: "flex",
@@ -62,8 +129,8 @@ function SignUp() {
                     type="name"
                     variant="outlined"
                     required
-                    // value={userInput.name}
-                    // onChange={getname}
+                    value={userInput.name}
+                    onChange={getname}
                   />
 
                   <StyledTextField
@@ -75,8 +142,8 @@ function SignUp() {
                     type="email"
                     variant="outlined"
                     required
-                    // value={userInput.email}
-                    // onChange={getEmail}
+                    value={userInput.email}
+                    onChange={getEmail}
                   />
 
                   <StyledTextField
@@ -88,8 +155,8 @@ function SignUp() {
                     type="password"
                     variant="outlined"
                     required
-                    // value={userInput.password}
-                    // onChange={getPassword}
+                    value={userInput.password}
+                    onChange={getPassword}
                   />
                 </Box>
 
@@ -152,7 +219,7 @@ function SignUp() {
                     </Link>
                   </Typography>
                 </Box>
-              </FormContainer>
+              </Box>
             </Box>
           </Box>
         </Card>
