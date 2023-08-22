@@ -1,4 +1,4 @@
-# Authentication Material-UI App
+# Authentication App
 
 Welcome to the Authentication Material-UI App! This is a simple application that demonstrates user authentication using several packages to provide secure authentication and functionality. Users can log in and view their profile information.
 
