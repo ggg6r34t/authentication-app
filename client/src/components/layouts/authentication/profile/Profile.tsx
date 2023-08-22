@@ -90,13 +90,19 @@ function Profile() {
   //   return <div> no data...</div>;
   // }
 
-  const options: DateTimeFormatOptions = {
-    year: "2-digit",
-    month: "long",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-  };
+  function formatLastLogin(timestamp: Date) {
+    const date = new Date(timestamp);
+
+    const options: DateTimeFormatOptions = {
+      year: "2-digit",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+
+    return date.toLocaleString(undefined, options);
+  }
 
   return (
     <Box sx={{ margin: "0 auto" }}>
@@ -137,7 +143,7 @@ function Profile() {
             <Typography variant="h5" color="#01e95e" fontWeight="medium">
               Last login:{" "}
               {userDetail?.lastLogin
-                ? userDetail?.lastLogin.toLocaleString(undefined, options)
+                ? formatLastLogin(userDetail?.lastLogin)
                 : "Never"}
             </Typography>
           </Box>
