@@ -84,6 +84,10 @@ export const userLogin = async (
       throw new UnauthorizedError("Invalid credentials");
     }
 
+    // update lastlogin timestamp
+    userData.lastLogin = new Date();
+    await userData.save();
+
     const token = generateJwtToken(userData);
     res.json({ userData, token, isCorrectPassword });
   } catch (error) {
