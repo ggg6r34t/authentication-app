@@ -126,7 +126,10 @@ function Profile() {
               </Stack>
             </Box>
             <Typography variant="h5" color="#01e95e" fontWeight="medium">
-              Logged in at: 10:52
+              Last login:{" "}
+              {userDetail?.lastLogin
+                ? userDetail?.lastLogin.toString()
+                : "Never"}
             </Typography>
           </Box>
         </Card>
