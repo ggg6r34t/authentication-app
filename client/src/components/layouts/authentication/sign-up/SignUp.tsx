@@ -196,7 +196,7 @@ function SignUp() {
                   </Typography>
                 </CheckboxContainer>
                 <StyledButtonContainer>
-                  <SignUpButton>sign up</SignUpButton>
+                  <SignUpButton type="submit">sign up</SignUpButton>
                 </StyledButtonContainer>
                 <Box mt={2} ml={2} maxWidth="399px">
                   <Typography

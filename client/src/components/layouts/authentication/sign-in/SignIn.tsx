@@ -214,8 +214,7 @@ function SignIn() {
                 >
                   <Button
                     fullWidth
-                    component={Link}
-                    to="/authentication/sign-in"
+                    type="submit"
                     sx={{
                       width: "399px",
                       color: "#080518",
