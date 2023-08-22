@@ -1,5 +1,5 @@
-# dashboard-material-ui
+# authentication-material-ui
 
-## Deploy link
+## Deploy link (via AWS S3 & Cloudfront)
 
 https://d36on8hv28czwm.cloudfront.net/
