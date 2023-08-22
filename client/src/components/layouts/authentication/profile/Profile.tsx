@@ -1,9 +1,10 @@
 // import axios from "axios";
 // useDispatch,
+import { useState } from "react";
 import { useSelector } from "react-redux";
 // import { useNavigate } from "react-router-dom";
 import { Box, Card, Grid, Stack, TextField, Typography } from "@mui/material";
-import { useState } from "react";
+import { DateTimeFormatOptions } from "intl";
 import styled from "styled-components";
 
 import { RootState } from "../../../../redux/store";
@@ -89,6 +90,14 @@ function Profile() {
   //   return <div> no data...</div>;
   // }
 
+  const options: DateTimeFormatOptions = {
+    year: "2-digit",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  };
+
   return (
     <Box sx={{ margin: "0 auto" }}>
       <Grid container width="100%">
@@ -128,7 +137,7 @@ function Profile() {
             <Typography variant="h5" color="#01e95e" fontWeight="medium">
               Last login:{" "}
               {userDetail?.lastLogin
-                ? userDetail?.lastLogin.toString()
+                ? userDetail?.lastLogin.toLocaleString(undefined, options)
                 : "Never"}
             </Typography>
           </Box>
