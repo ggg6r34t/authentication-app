@@ -6,7 +6,7 @@ Welcome to the Authentication Material-UI App! This is a simple application that
 
 The app is deployed using AWS S3 and CloudFront. You can access the deployed app through the following link:
 
-[Authentication Material-UI App](https://d36on8hv28czwm.cloudfront.net/)
+[Authentication App](https://d36on8hv28czwm.cloudfront.net/)
 
 ## Features
 
