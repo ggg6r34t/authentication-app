@@ -115,6 +115,8 @@ function SignIn() {
       })
       .catch((err) => {
         // handle login error
+
+        dispatch(userActions.setIsLoading(false));
         console.error(err);
       });
 
@@ -136,6 +138,7 @@ function SignIn() {
         <Grid
           container
           display="flex"
+          flexDirection="column"
           justifyContent="center"
           sx={{ width: "100%" }}
         >
@@ -169,6 +172,11 @@ function SignIn() {
               />
             </Box>
           </Card>
+          <Box mt={2} className="alert">
+            <Typography color="#01e95e" fontSize="14px" fontWeight="medium">
+              Alert: Free tier backend waking up.
+            </Typography>
+          </Box>
         </Grid>
       </Box>
     );

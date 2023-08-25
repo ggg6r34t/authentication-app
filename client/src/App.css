@@ -2,3 +2,19 @@ body {
   margin: 0;
   padding: 0;
 }
+
+.alert {
+  animation: alert 4s ease-in-out infinite;
+}
+
+@keyframes alert {
+  0%,
+  100% {
+    opacity: 1;
+    display: block;
+  }
+  50% {
+    opacity: 0;
+    display: none;
+  }
+}
