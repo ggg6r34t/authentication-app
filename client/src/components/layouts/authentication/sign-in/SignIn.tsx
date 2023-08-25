@@ -189,6 +189,9 @@ function SignIn() {
                   "& .css-5xe99f-MuiLinearProgress-bar1": {
                     backgroundColor: "#01e95e",
                   },
+                  "& .css-t752vm": {
+                    backgroundColor: "#01e95e",
+                  },
                 }}
               />
             </Box>
