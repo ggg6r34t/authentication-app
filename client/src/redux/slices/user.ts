@@ -4,8 +4,8 @@ import { User } from "../../type/types";
 
 type UserState = {
   userInformation: User | null;
-  isLogin: boolean;
   isLoading: boolean;
+  isLogin: boolean;
 };
 
 const storedUserState = localStorage.getItem("userState");
@@ -13,8 +13,8 @@ const initialState: UserState = storedUserState
   ? JSON.parse(storedUserState)
   : {
       userInformation: null,
-      isLogin: false,
       isLoading: true,
+      isLogin: false,
     };
 
 const userSlice = createSlice({
@@ -26,10 +26,10 @@ const userSlice = createSlice({
 
       localStorage.setItem("userState", JSON.stringify(state));
     },
-    setIsLoading: (state, action: PayloadAction<boolean>) => {
+    setIsLoading: (state, action) => {
       state.isLoading = action.payload;
     },
-    userLogin: (state, action: PayloadAction<boolean>) => {
+    userLogin: (state, action) => {
       state.isLogin = action.payload;
       localStorage.setItem("userState", JSON.stringify(state));
     },

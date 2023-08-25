@@ -76,6 +76,7 @@ function SignIn() {
   }
 
   function sendUserInformation() {
+    dispatch(userActions.setIsLoading(true));
     // send an AJAX request to the backend API endpoint
 
     let startTime = Date.now();
@@ -111,6 +112,7 @@ function SignIn() {
           const calculatedProgress = (timeTaken / expectedWakeUpTime) * 100;
 
           setProgress(calculatedProgress);
+          dispatch(userActions.setIsLoading(false));
         }
       })
       .catch((err) => {
