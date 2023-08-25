@@ -13,7 +13,6 @@ const initialState: UserState = storedUserState
   ? JSON.parse(storedUserState)
   : {
       userInformation: null,
-      isLoading: true,
       isLogin: false,
     };
 
@@ -23,11 +22,7 @@ const userSlice = createSlice({
   reducers: {
     setUserData: (state, action: PayloadAction<User>) => {
       state.userInformation = action.payload;
-
       localStorage.setItem("userState", JSON.stringify(state));
-    },
-    setIsLoading: (state, action) => {
-      state.isLoading = action.payload;
     },
     userLogin: (state, action) => {
       state.isLogin = action.payload;

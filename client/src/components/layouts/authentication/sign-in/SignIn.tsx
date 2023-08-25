@@ -1,6 +1,6 @@
 import axios from "axios";
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -50,8 +50,8 @@ const StyledSwitch = styled(Switch)`
   }
 `;
 function SignIn() {
-  const isLoading = useSelector((state: RootState) => state.users.isLoading);
   const [rememberMe, setRememberMe] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
 
   const [userInput, setUserInput] = useState({
@@ -75,10 +75,28 @@ function SignIn() {
     setUserInput({ ...userInput, password: e.target.value });
   }
 
-  function sendUserInformation() {
-    dispatch(userActions.setIsLoading(true));
-    // send an AJAX request to the backend API endpoint
+  const handleProgressUpdate = () => {
+    const timer = setInterval(() => {
+      setProgress((oldProgress) => {
+        if (oldProgress === 100) {
+          navigate("/account");
+          return 100;
+        }
+        const diff = Math.random() * 10;
+        return Math.min(oldProgress + diff, 100);
+      });
+    }, 1000);
 
+    return () => {
+      setIsLoading(false);
+      clearInterval(timer);
+    };
+  };
+
+  function sendUserInformation() {
+    setIsLoading(true);
+
+    // send an AJAX request to the backend API endpoint
     let startTime = Date.now();
 
     axios
@@ -100,7 +118,7 @@ function SignIn() {
           dispatch(userActions.userLogin(true));
 
           // redirect to user account
-          navigate("/account");
+          // navigate("/account");
 
           // calculation of the actual time taken for the backend to wake up
           const endTime = Date.now();
@@ -111,14 +129,15 @@ function SignIn() {
           const expectedWakeUpTime = 7 * 60 * 1000;
           const calculatedProgress = (timeTaken / expectedWakeUpTime) * 100;
 
-          setProgress(calculatedProgress);
-          dispatch(userActions.setIsLoading(false));
+          // ensure progress is within the range of 0 to 100
+          const progressValue = Math.min(Math.max(calculatedProgress, 0), 100);
+          setProgress(progressValue);
+          handleProgressUpdate();
         }
       })
       .catch((err) => {
         // handle login error
-
-        dispatch(userActions.setIsLoading(false));
+        setIsLoading(false);
         console.error(err);
       });
 
