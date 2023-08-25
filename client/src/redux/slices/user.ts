@@ -5,6 +5,7 @@ import { User } from "../../type/types";
 type UserState = {
   userInformation: User | null;
   isLogin: boolean;
+  isLoading: boolean;
 };
 
 const storedUserState = localStorage.getItem("userState");
@@ -13,6 +14,7 @@ const initialState: UserState = storedUserState
   : {
       userInformation: null,
       isLogin: false,
+      isLoading: true,
     };
 
 const userSlice = createSlice({
@@ -21,6 +23,7 @@ const userSlice = createSlice({
   reducers: {
     setUserData: (state, action: PayloadAction<User>) => {
       state.userInformation = action.payload;
+      state.isLoading = false;
       localStorage.setItem("userState", JSON.stringify(state));
     },
     userLogin: (state, action: PayloadAction<boolean>) => {

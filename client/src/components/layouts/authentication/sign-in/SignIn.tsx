@@ -1,9 +1,17 @@
 import axios from "axios";
 import styled from "styled-components";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { Box, Button, Card, Grid, Switch, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  Grid,
+  LinearProgress,
+  Switch,
+  Typography,
+} from "@mui/material";
 
 import { StyledTextField } from "../sign-up/signupStyles";
 import { userActions } from "../../../../redux/slices/user";
@@ -11,6 +19,7 @@ import { User } from "../../../../type/types";
 import { BASE_URL } from "../../../../api/api";
 import Socials from "../../../socials/Socials";
 import Separator from "../../../separator/Separator";
+import { RootState } from "../../../../redux/store";
 
 const StyledSwitch = styled(Switch)`
   & .MuiSwitch-thumb {
@@ -41,13 +50,16 @@ const StyledSwitch = styled(Switch)`
   }
 `;
 function SignIn() {
+  const isLoading = useSelector((state: RootState) => state.users.isLoading);
   const [rememberMe, setRememberMe] = useState(false);
-  const handleSetRememberMe = () => setRememberMe(!rememberMe);
+  const [progress, setProgress] = useState(0);
 
   const [userInput, setUserInput] = useState({
     email: "",
     password: "",
   });
+
+  const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
   const dispatch = useDispatch();
 
@@ -65,6 +77,9 @@ function SignIn() {
 
   function sendUserInformation() {
     // send an AJAX request to the backend API endpoint
+
+    let startTime = Date.now();
+
     axios
       .post(`${BASE_URL}/account/login`, userInput)
       .then((res) => {
@@ -85,6 +100,17 @@ function SignIn() {
 
           // redirect to user account
           navigate("/account");
+
+          // calculation of the actual time taken for the backend to wake up
+          const endTime = Date.now();
+          const timeTaken = endTime - startTime;
+
+          // calculation of the progress based on time taken and expected backend wake-up time
+          // converting 7 minutes to milliseconds
+          const expectedWakeUpTime = 7 * 60 * 1000;
+          const calculatedProgress = (timeTaken / expectedWakeUpTime) * 100;
+
+          setProgress(calculatedProgress);
         }
       })
       .catch((err) => {
@@ -103,6 +129,50 @@ function SignIn() {
     e.preventDefault();
     sendUserInformation();
   };
+
+  if (isLoading) {
+    return (
+      <Box sx={{ margin: "0 auto" }}>
+        <Grid
+          container
+          display="flex"
+          justifyContent="center"
+          sx={{ width: "100%" }}
+        >
+          <Card
+            sx={{
+              height: 131,
+              width: 330,
+              backgroundColor: "#080518",
+              border: "1px solid #01e95e",
+              borderTopWidth: "32px",
+            }}
+          >
+            <Box p={3} pb={0} textAlign="center">
+              <Typography variant="h5" color="#01e95e" fontWeight="medium">
+                LOADING...
+              </Typography>
+            </Box>
+            <Box p={2}>
+              <LinearProgress
+                variant="determinate"
+                value={progress}
+                sx={{
+                  width: "291px",
+                  height: "26px",
+                  backgroundColor: "#080518",
+                  border: "2px solid #01e95e",
+                  "& .css-5xe99f-MuiLinearProgress-bar1": {
+                    backgroundColor: "#01e95e",
+                  },
+                }}
+              />
+            </Box>
+          </Card>
+        </Grid>
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ margin: "0 auto" }}>
