@@ -1,7 +1,7 @@
 import axios from "axios";
 import styled from "styled-components";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
@@ -19,6 +19,7 @@ import { User } from "../../../../type/types";
 import { BASE_URL } from "../../../../api/api";
 import Socials from "../../../socials/Socials";
 import Separator from "../../../separator/Separator";
+import { RootState } from "../../../../redux/store";
 
 const StyledSwitch = styled(Switch)`
   & .MuiSwitch-thumb {
@@ -49,6 +50,7 @@ const StyledSwitch = styled(Switch)`
   }
 `;
 function SignIn() {
+  const isLogin = useSelector((state: RootState) => state.users.isLogin);
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -75,12 +77,13 @@ function SignIn() {
   }
 
   const handleProgressUpdate = () => {
-    const randomDelay = Math.floor(Math.random() * 3000) + 1000;
+    const randomDelay = Math.floor(Math.random() * 3500) + 1000;
     const timer = setInterval(() => {
       setProgress((oldProgress) => {
         if (oldProgress === 100) {
           navigate("/account");
           setIsLoading(false);
+          dispatch(userActions.userLogin(true));
           return 100;
         }
         const diff = Math.random() * 10;
@@ -197,11 +200,13 @@ function SignIn() {
               />
             </Box>
           </Card>
-          <Box mt={2} className="alert">
-            <Typography color="#01e95e" fontSize="14px" fontWeight="medium">
-              Alert: Free tier backend waking up.
-            </Typography>
-          </Box>
+          {isLogin && (
+            <Box mt={2} className="alert">
+              <Typography color="#01e95e" fontSize="14px" fontWeight="medium">
+                Alert: Free tier backend waking up!
+              </Typography>
+            </Box>
+          )}
         </Grid>
       </Box>
     );
