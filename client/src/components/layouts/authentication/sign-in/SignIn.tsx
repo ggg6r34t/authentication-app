@@ -83,7 +83,6 @@ function SignIn() {
           setIsLoading(false);
           return 100;
         }
-        console.log(randomDelay, "randomDelay");
         const diff = Math.random() * 10;
         return Math.min(oldProgress + diff, 100);
       });
@@ -155,10 +154,7 @@ function SignIn() {
     sendUserInformation();
   };
 
-  console.log(isLoading, "isLoading initialState");
-
   if (isLoading) {
-    console.log(isLoading, "loading indicator");
     return (
       <Box sx={{ margin: "0 auto" }}>
         <Grid
