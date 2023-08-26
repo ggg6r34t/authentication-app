@@ -1,7 +1,7 @@
 import axios from "axios";
 import styled from "styled-components";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
@@ -19,7 +19,6 @@ import { User } from "../../../../type/types";
 import { BASE_URL } from "../../../../api/api";
 import Socials from "../../../socials/Socials";
 import Separator from "../../../separator/Separator";
-import { RootState } from "../../../../redux/store";
 
 const StyledSwitch = styled(Switch)`
   & .MuiSwitch-thumb {
@@ -76,16 +75,19 @@ function SignIn() {
   }
 
   const handleProgressUpdate = () => {
+    const randomDelay = Math.floor(Math.random() * 3000) + 1000;
     const timer = setInterval(() => {
       setProgress((oldProgress) => {
         if (oldProgress === 100) {
           navigate("/account");
+          setIsLoading(false);
           return 100;
         }
+        console.log(randomDelay, "randomDelay");
         const diff = Math.random() * 10;
         return Math.min(oldProgress + diff, 100);
       });
-    }, 1000);
+    }, randomDelay);
 
     return () => {
       setIsLoading(false);
@@ -153,7 +155,10 @@ function SignIn() {
     sendUserInformation();
   };
 
+  console.log(isLoading, "isLoading initialState");
+
   if (isLoading) {
+    console.log(isLoading, "loading indicator");
     return (
       <Box sx={{ margin: "0 auto" }}>
         <Grid
