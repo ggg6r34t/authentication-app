@@ -7,7 +7,7 @@ import app from "./app";
 dotenv.config();
 
 // Connects to the database via the URI
-const port = process.env.NODE_ENV === "production" ? process.env.PORT : 8000;
+const PORT = process.env.NODE_ENV === "production" ? process.env.PORT : 8000;
 
 const options = {
   useNewUrlParser: true,
@@ -20,8 +20,8 @@ mongoose.set("strictQuery", false);
 mongoose
   .connect(process.env.MONGODB_URI as string, options)
   .then(() => {
-    app.listen(port, () => {
-      console.log(`Server is running on port ${port} `);
+    app.listen(PORT, () => {
+      console.log(`Server is running on PORT ${PORT} `);
     });
   })
   .catch((err: Error) => {

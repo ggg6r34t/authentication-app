@@ -4,15 +4,18 @@ import mongoose, { Document } from "mongoose";
 export type UserDocument = Document & {
   name: string;
   email: string;
-  password: string;
+  password?: string;
+  googleId?: string;
   lastLogin: Date;
 };
+
 const UserSchema = new mongoose.Schema(
   {
-    // type from database
+    // type from the database
     name: { type: String, required: true },
     email: { type: String, unique: true, required: true },
-    password: { type: String, required: true },
+    password: { type: String },
+    googleId: { type: String },
     lastLogin: { type: Date, default: null },
   },
   { timestamps: true }

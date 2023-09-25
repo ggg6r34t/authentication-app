@@ -15,6 +15,31 @@ export const createUserService = async (
   }
 };
 
+export const findOrCreateUserService = async (
+  payload: Partial<UserDocument>
+): Promise<UserDocument> => {
+  const user = await User.findOne({ googleId: payload.googleId });
+
+  if (user) {
+    return user;
+  } else {
+    const newUser = new User({
+      email: payload.email,
+      name: payload.name,
+      googleId: payload.googleId,
+    });
+
+    try {
+      return await newUser.save();
+    } catch (error) {
+      console.error("Error creating account:", error);
+      throw new InternalServerError(
+        "An error occured while create the account."
+      );
+    }
+  }
+};
+
 export const getUserByIdservice = async (
   userId: string
 ): Promise<UserDocument | null> => {

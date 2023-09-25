@@ -18,6 +18,7 @@ import {
 
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET as string;
+const EXPIRATION_TIME = "1h";
 
 export const createUser = async (
   req: Request,
@@ -66,7 +67,7 @@ export const userLogin = async (
   try {
     const userData = await findUserByEmailService(email);
     if (!userData) {
-      res.status(403).json({ message: "User not found." });
+      res.status(403).json({ message: "User not found with this email" });
       return;
     }
 
@@ -91,6 +92,7 @@ export const userLogin = async (
     const token = generateJwtToken(userData);
     res.json({ userData, token, isCorrectPassword });
   } catch (error) {
+    console.error("Error Logging in:", error);
     next(error);
   }
 };
@@ -104,7 +106,7 @@ function generateJwtToken(userData: UserDocument): string {
     },
     JWT_SECRET,
     {
-      expiresIn: "1h",
+      expiresIn: EXPIRATION_TIME,
     }
   );
 }
@@ -160,5 +162,86 @@ export const updateUserInfo = async (
     res.status(200).json(updatedUser);
   } catch (error) {
     next(error);
+  }
+};
+
+export const facebookAuthenticate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userData = req.user as UserDocument;
+
+    const tokenPayload = {
+      email: userData.email,
+      _id: userData._id,
+    };
+    const tokenOptions = {
+      expiresIn: EXPIRATION_TIME,
+    };
+    const token = jwt.sign(tokenPayload, JWT_SECRET, tokenOptions);
+
+    if (!userData) {
+      return res
+        .status(404)
+        .json({ message: "User not found with this email" });
+    } else {
+      return res.status(200).json({ token, userData });
+    }
+  } catch (error) {
+    console.error("Error in facebookAuthenticate:", error);
+    return next(error);
+  }
+};
+
+export const githubAuthenticate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userData = req.user as UserDocument;
+
+    const tokenPayload = {
+      email: userData.email,
+      _id: userData._id,
+    };
+    const tokenOptions = {
+      expiresIn: EXPIRATION_TIME,
+    };
+    const token = jwt.sign(tokenPayload, JWT_SECRET, tokenOptions);
+
+    if (!userData) {
+      return res
+        .status(404)
+        .json({ message: "User not found with this email" });
+    } else {
+      return res.status(200).json({ token, userData });
+    }
+  } catch (error) {
+    console.error("Error in githubAuthenticate:", error);
+    return next(error);
+  }
+};
+
+export const googleAuthenticate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userData = req.body.user as UserDocument;
+
+    if (!userData) {
+      res.status(404).json({ message: "User not found with this email" });
+      return;
+    }
+
+    const token = generateJwtToken(userData);
+    res.json({ token, userData });
+  } catch (error) {
+    console.error("Error in googleAuthenticate:", error);
+    return next(error);
   }
 };
